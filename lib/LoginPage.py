@@ -57,9 +57,9 @@ class OpenIDLoginPage(BasePage):
         esgf_open_id_header = driver.find_element_by_xpath(self._esgf_open_id_heading_locator)
     
     def _enter_credentials(self, username, password):
+        print("xxx _enter_credentials xxx")
         self.driver.find_element_by_id(self._esgf_open_id_username_locator).send_keys(username)
         self.driver.find_element_by_id(self._esgf_open_id_password_locator).send_keys(password)
-        print("xxx after entering passwod")
         time.sleep(2)
         self.driver.find_element_by_xpath(self._submit_locator).click()
         time.sleep(4)

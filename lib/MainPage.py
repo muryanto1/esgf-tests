@@ -2,6 +2,9 @@ import time
 
 from BasePage import BasePage
 from BasePage import InvalidPageException
+from LoginPage import LoginPage
+from LoginPage import OpenIDLoginPage
+
 from selenium.common.exceptions import NoSuchElementException
 
 from selenium import webdriver
@@ -14,6 +17,7 @@ class MainPage(BasePage):
 
     _home_locator = "//div[@id='top_nav_left']//a[contains(text(), 'Home')]"
     _login_page_locator = "//a[contains(text(),'Login')]"
+    _logout_locator = "//a[contains(text(),'Log out')]"
 
     def __init__(self, driver):
         super(MainPage, self).__init__(driver)
@@ -22,8 +26,18 @@ class MainPage(BasePage):
         # validate Main page is displaying a 'Home' tab
         home_tab_element = driver.find_element_by_xpath(self._home_locator)
 
-    def goto_login_page(self):
+    def _goto_login_page(self):
         login_page_element = self.driver.find_element_by_xpath(self._login_page_locator)
         login_page_element.click()
 
+
+    def do_login(self, idp_server, user, password):
+        self._goto_login_page()
+        login_page = LoginPage(self.driver)
+        login_page._login(idp_server, user, password)
+        openIdLoginPage = OpenIDLoginPage(self.driver)
+        openIdLoginPage._enter_credentials(user, password)
     
+    def do_logout(self):
+        logout_element = self.driver.find_element_by_xpath(self._logout_locator)
+        logout_element.click()
