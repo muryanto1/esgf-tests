@@ -14,6 +14,8 @@ from BaseTestCase import BaseTestCase
 from MainPage import MainPage
 from LoginPage import LoginPage
 from LoginPage import OpenIDLoginPage
+from ThreddsPage import ThreddsPage
+
 from pytest_testconfig import config
 
 import urllib3
@@ -27,9 +29,14 @@ class DownloadTest(BaseTestCase):
         idp_server = self._get_idp_server()
         main_page.do_login(idp_server, user, password)
         urllib3.disable_warnings()
-        main_page.load_page("https://esgf-dev1.llnl.gov/thredds")
+        main_page.load_page("https://{s}/thredds".format(s=idp_server))
         time.sleep(10)
 
+        thredds_page = ThreddsPage(self.driver)
+        print("xxx after instantiating thredds_page...")
+
+        thredds_page._select_dataset()
+        time.sleep(5)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
