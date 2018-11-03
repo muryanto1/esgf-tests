@@ -14,16 +14,22 @@ class BasePage(object):
     _delay = 3
 
     def __init__(self, driver, idp_server):
-        self._validate_page(driver)
         self.driver = driver
         self._idp_server = idp_server
+        self._validate_page()
 
     @abstractmethod
-    def _validate_page(self, driver):
+    def _validate_page(self):
         return
 
-    def load_page(self, url, expected_element=(By.TAG_NAME, 'html'), 
+    def load_page(self, server, page=None, expected_element=(By.TAG_NAME, 'html'), 
                   timeout=_wait_timeout):
+        print("xxx xxx load_page..server: {s}, page: {p}".format(s=server,
+                                                                 p=page))
+        if page is None:
+            url = "https://{s}".format(s=server)
+        else:
+            url = "https://{s}/{p}".format(s=server, p=page)
         try:
             r = requests.get(url, verify=False, timeout=timeout)
             err_msg = "fail to connect to '{0}' (code = {1})".format(url, r.status_code)

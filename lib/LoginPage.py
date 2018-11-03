@@ -21,10 +21,10 @@ class LoginPage(BasePage):
     def __init__(self, driver, idp_server):
         super(LoginPage, self).__init__(driver, idp_server)
 
-    def _validate_page(self, driver):
+    def _validate_page(self):
         # validate Login Page is displaying 'OpenID Login'
         print("xxx LoginPage._validate_page()")
-        open_id_header = driver.find_element_by_xpath(self._openID_heading_locator)
+        open_id_header = self.driver.find_element_by_xpath(self._openID_heading_locator)
 
     def _login(self, idp_server, user, password):
         open_id = "https://{s}/esgf-idp/openid/{u}".format(s=idp_server,
@@ -51,10 +51,10 @@ class OpenIDLoginPage(BasePage):
     def __init__(self, driver, idp_server):
         super(OpenIDLoginPage, self).__init__(driver, idp_server)
 
-    def _validate_page(self, driver):
+    def _validate_page(self):
         # validate page displaying 'ESGF OpenID Login'
         print("xxx OpenIDLoginPage._validate_page()")
-        esgf_open_id_header = driver.find_element_by_xpath(self._esgf_open_id_heading_locator)
+        esgf_open_id_header = self.driver.find_element_by_xpath(self._esgf_open_id_heading_locator)
     
     def _enter_credentials(self, username, password):
         print("xxx _enter_credentials xxx")
@@ -64,6 +64,27 @@ class OpenIDLoginPage(BasePage):
         self.driver.find_element_by_xpath(self._submit_locator).click()
         time.sleep(4)
 
+class DataAccessLoginPage(BasePage):
+    '''
+    This is for 'Data Access Login' page - esg_orp
+    '''
+    _data_access_login_heading_locator = "//h1[contains(text(), 'Data Access Login')]"
+    def __init__(self, driver, server):
+        super(DataAccessLoginPage, self).__init__(driver, server)
+        self.load_page(server)
+
+    def _validate_page(self):
+        # validate page displaying 'Data Access Login':
+        try:
+            self.driver.find_element_by_xpath(self._data_access_login_heading_locator)    
+        except NoSuchElementException:
+            raise InvalidPageException
+        if self.get_idp_server() is None:
+            self.set_idp_server()
+
+    def _enter_open_id(self, username):
+        open_id = "https://{s}/esgf-idp/openid/{u}".format(s=idp_server,
+                                                           u=username)
 
         
 

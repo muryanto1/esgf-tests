@@ -22,9 +22,9 @@ class MainPage(BasePage):
     def __init__(self, driver, idp_server):
         super(MainPage, self).__init__(driver, idp_server)
         
-    def _validate_page(self, driver):
+    def _validate_page(self):
         # validate Main page is displaying a 'Home' tab
-        home_tab_element = driver.find_element_by_xpath(self._home_locator)
+        home_tab_element = self.driver.find_element_by_xpath(self._home_locator)
 
     def _goto_login_page(self):
         login_page_element = self.driver.find_element_by_xpath(self._login_page_locator)

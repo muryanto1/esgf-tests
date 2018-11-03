@@ -18,24 +18,45 @@ from ThreddsPage import ThreddsPage
 
 from pytest_testconfig import config
 
-import urllib3
-
+#import urllib3
 
 class DownloadTest(BaseTestCase):
 
-    def test_http_download(self):
+    def XYZtest_http_download_no_login_first(self):
         main_page = MainPage(self.driver)
         user, password = self._get_test_user_credentials()
         idp_server = self._get_idp_server()
-        main_page.do_login(idp_server, user, password)
-        urllib3.disable_warnings()
-        main_page.load_page("https://{s}/thredds".format(s=idp_server))
+        #main_page.do_login(idp_server, user, password)
+        #urllib3.disable_warnings()
+        main_page.load_page(idp_server, "thredds")
         time.sleep(10)
-
         thredds_page = ThreddsPage(self.driver)
         print("xxx after instantiating thredds_page...")
 
-        thredds_page._select_dataset()
+        download_dir = self._get_download_dir()
+        file_name = thredds_page._do_download('http', user, password)
+        print("xxx xxx test_http_download: dir: {d}, filename: {f}".format(d=download_dir,
+                                                                           f=file_name))
+        time.sleep(5)
+
+    def test_http_download_login_first(self):
+        # get info from test config                                                                                 
+        user, password = self._get_test_user_credentials()
+        idp_server = self._get_idp_server()
+        main_page = MainPage(self.driver, idp_server)
+
+        # main_page.load_page(idp_server)
+        main_page.do_login(user, password)
+        print("xxx...test_http_download_login_first(), idp_server: {s}".format(s=idp_server))
+        time.sleep(10)
+
+        thredds_page = ThreddsPage(self.driver, idp_server)
+        print("xxx after instantiating thredds_page...")
+
+        download_dir = self._get_download_dir()
+        file_name = thredds_page._do_download('http')
+        print("xxx xxx test_http_download: dir: {d}, filename: {f}".format(d=download_dir,
+                                                                           f=file_name))
         time.sleep(5)
 
 if __name__ == '__main__':
