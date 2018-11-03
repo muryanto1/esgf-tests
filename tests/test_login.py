@@ -19,10 +19,14 @@ from pytest_testconfig import config
 class LoginTest(BaseTestCase):
 
     def test_user_login(self):
-        main_page = MainPage(self.driver)
+
+        # get info from test config
         user, password = self._get_test_user_credentials()
         idp_server = self._get_idp_server()
-        main_page.do_login(idp_server, user, password)
+
+        main_page = MainPage(self.driver, idp_server)
+
+        main_page.do_login(user, password)
         # may need to REVISIT -- validate
         main_page.do_logout()
         print("xxx after do_logout()")

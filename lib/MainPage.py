@@ -19,9 +19,9 @@ class MainPage(BasePage):
     _login_page_locator = "//a[contains(text(),'Login')]"
     _logout_locator = "//a[contains(text(),'Log out')]"
 
-    def __init__(self, driver):
-        super(MainPage, self).__init__(driver)
-
+    def __init__(self, driver, idp_server):
+        super(MainPage, self).__init__(driver, idp_server)
+        
     def _validate_page(self, driver):
         # validate Main page is displaying a 'Home' tab
         home_tab_element = driver.find_element_by_xpath(self._home_locator)
@@ -31,11 +31,12 @@ class MainPage(BasePage):
         login_page_element.click()
 
 
-    def do_login(self, idp_server, user, password):
+    def do_login(self, user, password):
+        idp_server = self.get_idp_server()
         self._goto_login_page()
-        login_page = LoginPage(self.driver)
+        login_page = LoginPage(self.driver, idp_server)
         login_page._login(idp_server, user, password)
-        openIdLoginPage = OpenIDLoginPage(self.driver)
+        openIdLoginPage = OpenIDLoginPage(self.driver, idp_server)
         openIdLoginPage._enter_credentials(user, password)
     
     def do_logout(self):

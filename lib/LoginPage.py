@@ -18,8 +18,8 @@ class LoginPage(BasePage):
     # login button
     _openid_login_locator = "//input[@value='Login']"
 
-    def __init__(self, driver):
-        super(LoginPage, self).__init__(driver)
+    def __init__(self, driver, idp_server):
+        super(LoginPage, self).__init__(driver, idp_server)
 
     def _validate_page(self, driver):
         # validate Login Page is displaying 'OpenID Login'
@@ -48,8 +48,8 @@ class OpenIDLoginPage(BasePage):
     _esgf_open_id_password_locator = "password"
     _submit_locator = "//input[@class='button' and @value='SUBMIT']"
 
-    def __init__(self, driver):
-        super(OpenIDLoginPage, self).__init__(driver)
+    def __init__(self, driver, idp_server):
+        super(OpenIDLoginPage, self).__init__(driver, idp_server)
 
     def _validate_page(self, driver):
         # validate page displaying 'ESGF OpenID Login'

@@ -13,9 +13,10 @@ class BasePage(object):
     _wait_timeout = 10
     _delay = 3
 
-    def __init__(self, driver):
+    def __init__(self, driver, idp_server):
         self._validate_page(driver)
         self.driver = driver
+        self._idp_server = idp_server
 
     @abstractmethod
     def _validate_page(self, driver):
@@ -41,6 +42,9 @@ class BasePage(object):
             WebDriverWait(self.driver, timeout).until(element)
         except TimeoutException:
             assert(False), "page not found or timeout  for {0}".format(url)
+
+    def get_idp_server(self):
+        return(self._idp_server)
 
 class InvalidPageException(Exception):
     """ Throw this exception when we do not find the correct page """
