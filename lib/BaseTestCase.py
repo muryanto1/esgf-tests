@@ -47,6 +47,7 @@ class BaseTestCase(unittest.TestCase):
             firefox_profile.set_preference('extensions.logging.enabled', False)
             firefox_profile.set_preference('network.dns.disableIPv6', False)
             firefox_profile.set_preference('browser.download.dir', self._download_dir)
+            firefox_profile.set_preference('browser.download.useDownloadDir', True)
             firefox_profile.set_preference('browser.download.manager.showWhenStarting', False)
             firefox_profile.set_preference('browser.download.manager.showAlertOnComplete', False)
             
