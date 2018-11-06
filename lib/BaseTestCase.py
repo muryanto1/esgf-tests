@@ -46,7 +46,10 @@ class BaseTestCase(unittest.TestCase):
             firefox_profile = FirefoxProfile() # profile                                                                            
             firefox_profile.set_preference('extensions.logging.enabled', False)
             firefox_profile.set_preference('network.dns.disableIPv6', False)
-
+            firefox_profile.set_preference('browser.download_dir', self._download_dir)
+            firefox_profile.set_preference('browser.download.manager.showWhenStarting', False)
+            firefox_profile.set_preference('browser.download.manager.showAlertOnComplete', False)
+            
             firefox_capabilities = DesiredCapabilities().FIREFOX
             firefox_capabilities['marionette'] = True
             firefox_capabilities['moz:firefoxOptions'] = {'args': ['--headless']}
