@@ -64,6 +64,7 @@ class OpenIDLoginPage(BasePage):
         time.sleep(4)
 
     def _enter_password(self, password):
+        print("...OpenIdLoginPage._enter_password()...")
         self.driver.find_element_by_id(self._esgf_open_id_password_locator).send_keys(password)
         time.sleep(2)
         self.driver.find_element_by_xpath(self._submit_locator).click()
