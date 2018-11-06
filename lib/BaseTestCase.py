@@ -30,6 +30,7 @@ class BaseTestCase(unittest.TestCase):
         browser = config[BROWSER_SECTION][BROWSER_KEY]
         options = Options()
         options.add_argument("--headless")
+        #options.add_argument("--foreground")
 
         if browser == 'chrome':
             #options.binary_location = "/usr/local/bin/chromedriver"
@@ -49,6 +50,7 @@ class BaseTestCase(unittest.TestCase):
             firefox_profile.set_preference('browser.download.dir', self._download_dir)
             firefox_profile.set_preference('browser.download.folderList', 2)
             firefox_profile.set_preference('browser.download.useDownloadDir', True)
+            firefox_profile.set_preference('browser.download.panel.shown', False)
             firefox_profile.set_preference('browser.download.manager.showWhenStarting', False)
             firefox_profile.set_preference('browser.download.manager.showAlertOnComplete', False)
             
@@ -63,6 +65,7 @@ class BaseTestCase(unittest.TestCase):
                                             options=options,
                                             capabilities = firefox_capabilities,
                                             executable_path="/usr/local/bin/geckodriver")
+
         self.driver.implicitly_wait(10)
         idp_server = self._get_idp_server()
         self.driver.get("https://{n}".format(n=idp_server))
