@@ -24,8 +24,6 @@ class BasePage(object):
 
     def load_page(self, server, page=None, expected_element=(By.TAG_NAME, 'html'), 
                   timeout=_wait_timeout):
-        print("xxx xxx load_page..server: {s}, page: {p}".format(s=server,
-                                                                 p=page))
         if page is None:
             url = "https://{s}".format(s=server)
         else:

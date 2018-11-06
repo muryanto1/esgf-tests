@@ -23,13 +23,12 @@ class LoginPage(BasePage):
 
     def _validate_page(self):
         # validate Login Page is displaying 'OpenID Login'
-        print("xxx LoginPage._validate_page()")
+        print("...LoginPage._validate_page()")
         open_id_header = self.driver.find_element_by_xpath(self._openID_heading_locator)
 
     def _login(self, idp_server, user, password):
         open_id = "https://{s}/esgf-idp/openid/{u}".format(s=idp_server,
                                                            u=user)
-        print("xxx open_id: {o}".format(o=open_id))
         self.driver.find_element_by_id(self._openid_locator).send_keys(open_id)
         time.sleep(4)
         self.driver.find_element_by_xpath(self._openid_login_locator).click()
@@ -53,12 +52,18 @@ class OpenIDLoginPage(BasePage):
 
     def _validate_page(self):
         # validate page displaying 'ESGF OpenID Login'
-        print("xxx OpenIDLoginPage._validate_page()")
+        print("...OpenIDLoginPage._validate_page()")
         esgf_open_id_header = self.driver.find_element_by_xpath(self._esgf_open_id_heading_locator)
     
     def _enter_credentials(self, username, password):
-        print("xxx _enter_credentials xxx")
+        print("...OpenIdLoginPage._enter_credentials()...")
         self.driver.find_element_by_id(self._esgf_open_id_username_locator).send_keys(username)
+        self.driver.find_element_by_id(self._esgf_open_id_password_locator).send_keys(password)
+        time.sleep(2)
+        self.driver.find_element_by_xpath(self._submit_locator).click()
+        time.sleep(4)
+
+    def _enter_password(self, password):
         self.driver.find_element_by_id(self._esgf_open_id_password_locator).send_keys(password)
         time.sleep(2)
         self.driver.find_element_by_xpath(self._submit_locator).click()
@@ -71,7 +76,7 @@ class DataAccessLoginPage(BasePage):
     _data_access_login_heading_locator = "//h1[contains(text(), 'Data Access Login')]"
     def __init__(self, driver, server):
         super(DataAccessLoginPage, self).__init__(driver, server)
-        self.load_page(server)
+        #self.load_page(server)
 
     def _validate_page(self):
         # validate page displaying 'Data Access Login':

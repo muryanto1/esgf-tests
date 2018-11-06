@@ -21,11 +21,12 @@ from TestConfig import *
 
 class BaseTestCase(unittest.TestCase):
 
+    _delay = 3
     def setUp(self):        
 
         #_download_dir = "/tmp"
         self._download_dir = tempfile.mkdtemp()
-        print("xxx xxx download_dir: {d}".format(d=self._download_dir))
+        print("...download_dir: {d}".format(d=self._download_dir))
         browser = config[BROWSER_SECTION][BROWSER_KEY]
         options = Options()
         options.add_argument("--headless")
