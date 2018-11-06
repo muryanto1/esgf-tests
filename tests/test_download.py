@@ -21,7 +21,7 @@ from pytest_testconfig import config
 class DownloadTest(BaseTestCase):
 
     _group_registration_request_locator = "//h1[contains(text(), 'Group Registration Request')]"
-    def test_http_download_user_has_no_access(self):
+    def ABCtest_http_download_user_has_no_access(self):
         '''
         Test restricted access, have the following in esgf_policies_common.xml:
         <policy resource=".*test.*" attribute_type="wheel" attribute_value="super" action="Read"/>
