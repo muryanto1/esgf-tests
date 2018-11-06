@@ -48,32 +48,43 @@ class BaseTestCase(unittest.TestCase):
             firefox_profile.set_preference('extensions.logging.enabled', False)
             firefox_profile.set_preference('network.dns.disableIPv6', False)
             firefox_profile.set_preference('browser.download.dir', self._download_dir)
-            #firefox_profile.set_preference('browser.download.folderList', 2)
+            firefox_profile.set_preference('browser.download.folderList', 2)
             firefox_profile.set_preference('browser.download.useDownloadDir', True)
             firefox_profile.set_preference('browser.download.panel.shown', False)
             firefox_profile.set_preference('browser.download.manager.showWhenStarting', False)
             firefox_profile.set_preference('browser.download.manager.showAlertOnComplete', False)
+            firefox_profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/x-netcdf");
             
             firefox_capabilities = DesiredCapabilities().FIREFOX
             firefox_capabilities['marionette'] = True
             firefox_capabilities['moz:firefoxOptions'] = {'args': ['--headless']}
 
             options.binary_location = "/usr/local/bin/geckodriver"
-            firefox_binary = FirefoxBinary("/opt/firefox58/firefox")        
+            firefox_binary = FirefoxBinary("/usr/bin/firefox")
+            #self.driver = webdriver.Firefox(firefox_profile=firefox_profile,
+            #                                firefox_binary=firefox_binary,
+            #                                options=options,
+            #                                capabilities = firefox_capabilities)
+
             self.driver = webdriver.Firefox(firefox_profile=firefox_profile,
-                                            firefox_binary=firefox_binary,
+                                            executable_path="/usr/local/bin/geckodriver",
                                             options=options,
-                                            capabilities = firefox_capabilities,
-                                            executable_path="/usr/local/bin/geckodriver")
+                                            capabilities = firefox_capabilities)
 
         self.driver.implicitly_wait(10)
         idp_server = self._get_idp_server()
+        print("xxx HERE HERE ")
         self.driver.get("https://{n}".format(n=idp_server))
         time.sleep(3)
 
     def _get_test_user_credentials(self):
         user = config[ACCOUNT_SECTION][USER_NAME_KEY]
         password = config[ACCOUNT_SECTION][USER_PASSWORD_KEY]
+        return(user, password)
+
+    def _get_admin_credentials(self):
+        user = config[COG_SECTION][ADMIN_USERNAME_KEY]
+        password = config[COG_SECTION][ADMIN_PASSWORD_KEY]
         return(user, password)
 
     def _get_idp_server(self):

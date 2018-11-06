@@ -41,42 +41,6 @@ class ThreddsPage(BasePage):
         if self.get_idp_server() is None:
             self.set_idp_server()
 
-    def _do_download(self, type, username=None, password=None):
-        # starting from thredds top level page, and user not logged in
-        self.driver.find_element_by_xpath(self._root_catalog_locator).click()        
-        self.driver.find_element_by_xpath(self._test_folder_locator).click()
-        file_name = self.driver.find_element_by_xpath(self._test_file_locator).text
-        print("xxx xxx file to be download: {f}".format(f=file_name))
-        idp_server = self.get_idp_server()
-
-        self.driver.find_element_by_xpath(self._test_file_locator).click()
-        self.__select_li_for_download_type(file_name, type)
-
-        try:
-            print("xxx DEBUG...idp_server: {s}".format(s=idp_server))
-            data_access_login_page = DataAccessLoginPage(self.driver,
-                                                         idp_server)
-        except InvalidPageException:
-            print("Not getting the expected DataAccessLoginPage")
-       
-        open_id = "https://{s}/esgf-idp/openid/{u}".format(s=self.get_idp_server(),
-                                                           u=username)
-        print("xxx open_id: {i}".format(i=open_id))
-        try:
-            self.driver.find_element_by_xpath(self._open_id_input_locator)
-        except NoSuchElementException:
-            print("FAIL...did not find the OpenID drop down")
-            raise NoSuchElementException
-
-        self.driver.find_element_by_xpath(self._open_id_input_locator).send_keys(open_id)
-        time.sleep(3)
-        self.driver.find_element_by_xpath(self._open_id_go_locator).click()
-        time.sleep(5)
-        openIdLoginPage = OpenIDLoginPage(self.driver, idp_server)
-        openIdLoginPage._enter_password(password)
-
-        return file_name
-
     def _do_download_restricted_access(self, type,
                                        username=None, password=None):
         # starting from thredds top level page, and user not logged in
@@ -118,13 +82,6 @@ class ThreddsPage(BasePage):
             print("Not getting the expected OpenIdLoginPage")
             raise InvalidPageException
 
-        #if user_has_access is False:
-        #    try:
-        #        self.driver.find_element_by_xpath(self._group_registration_request_locator)
-        #        return None
-        #    except NoSuchElementException:
-        #        print("Fail...should be getting a 'Group Registration Request'")
-        #        raise NoSuchElementException    
         return file_name
 
     def __select_li_for_download_type(self, file_name, type):
