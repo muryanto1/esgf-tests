@@ -46,8 +46,7 @@ class ThreddsPage(BasePage):
         print("...file to be download: {f}".format(f=file_name))
         return file_name
 
-    def _select_download_type(self, type,
-                              username=None, password=None):
+    def _select_download_type(self, type):
         file_name = self._go_through_catalog()
         idp_server = self.get_idp_server()
 
@@ -67,7 +66,9 @@ class ThreddsPage(BasePage):
             print("Not getting the expected DataAccessLoginPage")
 
         # click on the arrow to get the drop down
-        data_access_login_page._select_open_id_from_drop_down()
+        # TEMPORARY
+        ext_open_id = "https://esgf-node.llnl.gov/esgf-idp/openid/"
+        data_access_login_page._select_open_id_from_drop_down(ext_open_id)
 
     def __select_li_for_download_type(self, file_name, type):
         _path_locator = "/thredds/fileServer/esg_dataroot/test/{f}".format(f=file_name)

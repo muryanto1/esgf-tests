@@ -33,7 +33,7 @@ class DownloadTest(BaseTestCase):
             raise InvalidPageException
 
         data_access_login_page._enter_open_id(idp_server, user)
-
+        time.sleep(5)
         try:
             openIdLoginPage = OpenIDLoginPage(self.driver, idp_server)
             openIdLoginPage._enter_password(password)
@@ -41,7 +41,7 @@ class DownloadTest(BaseTestCase):
             print("Not getting the expected OpenIdLoginPage")
             raise InvalidPageException
 
-    def test_http_download_user_has_no_access(self):
+    def WORK_test_http_download_user_has_no_access(self):
         '''
         Test restricted access, have the following in esgf_policies_common.xml:
         <policy resource=".*test.*" attribute_type="wheel" attribute_value="super" action="Read"/>
@@ -57,7 +57,7 @@ class DownloadTest(BaseTestCase):
         thredds_page = ThreddsPage(self.driver, idp_server)
         download_dir = self._get_download_dir()
 
-        file_name = thredds_page._select_download_type('http', user, password)
+        file_name = thredds_page._select_download_type('http')
         self._do_login(idp_server, user, password)
 
         assert self.driver.find_element_by_xpath(self._group_registration_request_locator)
@@ -77,25 +77,34 @@ class DownloadTest(BaseTestCase):
         thredds_page = ThreddsPage(self.driver, idp_server)
         download_dir = self._get_download_dir()
 
-        file_name = thredds_page._select_download_type('http', user, password)
+        file_name = thredds_page._select_download_type('http')
         self._do_login(idp_server, user, password)
         
         assert os.path.isfile(os.path.join(download_dir, file_name))
         time.sleep(self._delay)
 
-    def WORKING_test_http_download_with_external_idp_authentication(self):
+    def test_http_download_with_external_idp_authentication(self):
 
         idp_server = self._get_idp_server()
-        user, password = self._get_admin_credentials()
+        user, password = self._get_test_user_credentials()
         main_page = MainPage(self.driver, idp_server)
         main_page.load_page(idp_server, "thredds")
         time.sleep(10)
         thredds_page = ThreddsPage(self.driver, idp_server)
         download_dir = self._get_download_dir()
-        thredds_page._do_download_external_idp_authentication('http', user, password)
+
+        #
+        # assumption: this ext_idp_server has same test user and password
+        #
+        ext_idp_server = "esgf-node.llnl.gov"
+        file_name = thredds_page._select_download_type('http')
+        self._do_login(ext_idp_server, user, password)
+        
+        assert os.path.isfile(os.path.join(download_dir, file_name))
+        time.sleep(self._delay)
 
     def ABCtest_http_download_login_first(self):
-        # get info from test config                                                                                 
+        # get info from test config                                                                              
         user, password = self._get_test_user_credentials()
         idp_server = self._get_idp_server()
         main_page = MainPage(self.driver, idp_server)
