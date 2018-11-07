@@ -11,7 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from LoginPage import DataAccessLoginPage
-from LoginPage import OpenIDLoginPage
 
 class ThreddsPage(BasePage):
 
@@ -20,9 +19,6 @@ class ThreddsPage(BasePage):
     _test_file_locator = "//tt[contains(text(), 'nc')]"
 
     _download_li_locator = "//ol//li"
-
-    _open_id_input_locator = "//span[@class='custom-combobox']//input[@class='custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left ui-autocomplete-input']"
-    _open_id_go_locator = "//input[@value='GO']"
 
     download_map = {"http": "HTTPServer:",
                      "ftp": "GridFTP:",
@@ -41,48 +37,37 @@ class ThreddsPage(BasePage):
         if self.get_idp_server() is None:
             self.set_idp_server()
 
-    def _do_download_restricted_access(self, type,
-                                       username=None, password=None):
-        # starting from thredds top level page, and user not logged in
-
+    def _go_through_catalog(self):
         self.driver.find_element_by_xpath(self._root_catalog_locator).click()        
         self.driver.find_element_by_xpath(self._test_folder_locator).click()
         file_name = self.driver.find_element_by_xpath(self._test_file_locator).text
+        self.driver.find_element_by_xpath(self._test_file_locator).click()
+
         print("...file to be download: {f}".format(f=file_name))
+        return file_name
+
+    def _select_download_type(self, type,
+                              username=None, password=None):
+        file_name = self._go_through_catalog()
         idp_server = self.get_idp_server()
 
-        self.driver.find_element_by_xpath(self._test_file_locator).click()
         self.__select_li_for_download_type(file_name, type)
+        return file_name
 
+    def _do_download_external_idp_authentication(self, type,
+                                                 username=None, password=None):
+
+        file_name = self._go_through_catalog()
+        idp_server = self.get_idp_server()
+        self.__select_li_for_download_type(file_name, type)
         try:
             data_access_login_page = DataAccessLoginPage(self.driver,
                                                          idp_server)
         except InvalidPageException:
             print("Not getting the expected DataAccessLoginPage")
-       
-        open_id = "https://{s}/esgf-idp/openid/{u}".format(s=self.get_idp_server(),
-                                                           u=username)
-        print("...open_id: {i}".format(i=open_id))
-        try:
-            open_id_input_el = self.driver.find_element_by_xpath(self._open_id_input_locator)
-        except NoSuchElementException:
-            print("FAIL...did not find the OpenID input area")
-            raise NoSuchElementException
 
-        open_id_input_el.send_keys(open_id)
-        time.sleep(self._delay)
-        print("...click on 'GO' button")
-        self.driver.find_element_by_xpath(self._open_id_go_locator).click()
-        time.sleep(self._delay)
-
-        try:
-            openIdLoginPage = OpenIDLoginPage(self.driver, idp_server)
-            openIdLoginPage._enter_password(password)
-        except InvalidPageException:
-            print("Not getting the expected OpenIdLoginPage")
-            raise InvalidPageException
-
-        return file_name
+        # click on the arrow to get the drop down
+        data_access_login_page._select_open_id_from_drop_down()
 
     def __select_li_for_download_type(self, file_name, type):
         _path_locator = "/thredds/fileServer/esg_dataroot/test/{f}".format(f=file_name)

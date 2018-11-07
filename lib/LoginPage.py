@@ -75,12 +75,17 @@ class DataAccessLoginPage(BasePage):
     This is for 'Data Access Login' page - esg_orp
     '''
     _data_access_login_heading_locator = "//h1[contains(text(), 'Data Access Login')]"
+    _data_access_login_drop_down_locator = "//a[@title='Show All Items']"
+    _open_id_input_locator = "//span[@class='custom-combobox']//input[@class='custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left ui-autocomplete-input']"
+    _open_id_go_locator = "//input[@value='GO']"
+
     def __init__(self, driver, server):
         super(DataAccessLoginPage, self).__init__(driver, server)
         #self.load_page(server)
 
     def _validate_page(self):
         # validate page displaying 'Data Access Login':
+        print("...DataAccessLoginPage._validate_page()...")
         try:
             self.driver.find_element_by_xpath(self._data_access_login_heading_locator)    
         except NoSuchElementException:
@@ -88,10 +93,24 @@ class DataAccessLoginPage(BasePage):
         if self.get_idp_server() is None:
             self.set_idp_server()
 
-    def _enter_open_id(self, username):
+    def _enter_open_id(self, idp_server, username):
+        print("...DataAccessLoginPage._enter_open_id()...")
         open_id = "https://{s}/esgf-idp/openid/{u}".format(s=idp_server,
                                                            u=username)
+        try:
+            open_id_input_el = self.driver.find_element_by_xpath(self._open_id_input_locator)
+        except NoSuchElementException:
+            print("FAIL...did not find the OpenID input area")
+            raise NoSuchElementException
 
-        
+        open_id_input_el.send_keys(open_id)
+        time.sleep(self._delay)
+        print("...click on 'GO' button")
+        self.driver.find_element_by_xpath(self._open_id_go_locator).click()
+        time.sleep(self._delay)
 
+    def _select_open_id_from_drop_down(self):
+        print("...DataAccessLoginPage._select_open_id_from_drop_down()...")
+        self.driver.find_element_by_xpath(self._data_access_login_drop_down_locator).click()
+        time.sleep(self._delay)
 

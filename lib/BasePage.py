@@ -1,4 +1,5 @@
 import requests
+import time
 
 from abc import abstractmethod
 
@@ -46,6 +47,7 @@ class BasePage(object):
             WebDriverWait(self.driver, timeout).until(element)
         except TimeoutException:
             assert(False), "page not found or timeout  for {0}".format(url)
+        time.sleep(self._delay)
 
     def get_idp_server(self):
         return(self._idp_server)
