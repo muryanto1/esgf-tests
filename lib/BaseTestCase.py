@@ -67,13 +67,13 @@ class BaseTestCase(unittest.TestCase):
             #                                capabilities = firefox_capabilities)
 
             self.driver = webdriver.Firefox(firefox_profile=firefox_profile,
+                                            firefox_binary=firefox_binary,
                                             executable_path="/usr/local/bin/geckodriver",
                                             options=options,
                                             capabilities = firefox_capabilities)
 
         self.driver.implicitly_wait(10)
         idp_server = self._get_idp_server()
-        print("xxx HERE HERE ")
         self.driver.get("https://{n}".format(n=idp_server))
         time.sleep(3)
 
