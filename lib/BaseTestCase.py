@@ -29,8 +29,8 @@ class BaseTestCase(unittest.TestCase):
         print("...download_dir: {d}".format(d=self._download_dir))
         browser = config[BROWSER_SECTION][BROWSER_KEY]
         options = Options()
-        options.add_argument("--headless")
-        #options.add_argument("--foreground")
+        #options.add_argument("--headless")
+        options.add_argument("--foreground")
 
         if browser == 'chrome':
             #options.binary_location = "/usr/local/bin/chromedriver"
@@ -57,7 +57,7 @@ class BaseTestCase(unittest.TestCase):
             
             firefox_capabilities = DesiredCapabilities().FIREFOX
             firefox_capabilities['marionette'] = True
-            firefox_capabilities['moz:firefoxOptions'] = {'args': ['--headless']}
+            #firefox_capabilities['moz:firefoxOptions'] = {'args': ['--headless']}
 
             options.binary_location = "/usr/local/bin/geckodriver"
             firefox_binary = FirefoxBinary("/usr/bin/firefox")

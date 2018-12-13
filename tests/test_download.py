@@ -70,7 +70,7 @@ class DownloadTest(BaseTestCase):
         assert self.driver.find_element_by_xpath(self._group_registration_request_locator)
         time.sleep(self._delay)
 
-    def test_http_download_user_as_rootAdmin(self):
+    def ABCtest_http_download_user_as_rootAdmin(self):
         '''
         Test restricted access, have the following in esgf_policies_common.xml:
         <policy resource=".*test.*" attribute_type="wheel" attribute_value="super" action="Read"/>
@@ -95,7 +95,7 @@ class DownloadTest(BaseTestCase):
         assert os.path.isfile(os.path.join(download_dir, file_name))
         time.sleep(self._delay)
 
-    def test_http_download_with_external_idp_authentication(self):
+    def ABCtest_http_download_with_external_idp_authentication(self):
 
         print("...test_http_download_with_external_idp_authentication...")
         idp_server = self._get_idp_server()
