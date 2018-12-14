@@ -24,6 +24,7 @@ class BaseTestCase(unittest.TestCase):
     _delay = 3
     def setUp(self):        
 
+        print("xxx xxx xxx BaseTestCase.setup xxx")
         #_download_dir = "/tmp"
         self._download_dir = tempfile.mkdtemp()
         print("...download_dir: {d}".format(d=self._download_dir))
@@ -31,12 +32,14 @@ class BaseTestCase(unittest.TestCase):
         options = Options()
         #options.add_argument("--headless")
         options.add_argument("--foreground")
+        #mode = "--headless"
+        mode = "--foreground"
 
         if browser == 'chrome':
             #options.binary_location = "/usr/local/bin/chromedriver"
             chrome_options = webdriver.ChromeOptions()
             #chrome_options.binary_location = "/usr/local/bin/chromedriver"
-            ##chrome_options.add_argument("--headless")
+            chrome_options.add_argument(mode)
             preferences = {"download.default_directory": self._download_dir,
                            "directory_upgrade": True,
                            "safebrowsing.enabled": True,

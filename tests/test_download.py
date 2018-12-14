@@ -40,11 +40,12 @@ class DownloadTest(BaseTestCase):
         try:
             openIdLoginPage = OpenIDLoginPage(self.driver, idp_server)
             openIdLoginPage._enter_password(password)
+            print("xxx after enter openid and password")
         except InvalidPageException:
             print("Not getting the expected OpenIdLoginPage")
             raise InvalidPageException
 
-    def test_http_download_user_has_no_access(self):
+    def ABCtest_http_download_user_has_no_access(self):
         '''
         Test restricted access, have the following in esgf_policies_common.xml:
         <policy resource=".*test.*" attribute_type="wheel" attribute_value="super" action="Read"/>
@@ -89,14 +90,17 @@ class DownloadTest(BaseTestCase):
         download_dir = self._get_download_dir()
 
         file_name = thredds_page._select_download_type('http')
+        print("xxx downloaded file: {f}".format(f=os.path.join(download_dir, file_name)))
         self._do_login(idp_server, user, password)
+        # sleep for a bit to allow time for download to complete
+        time.sleep(10)
 
         ret_code = self._utils.restore_esgf_policies_common(file_to_restore, idp_server)
-        
+        print("xxx downloaded file: {f}".format(f=os.path.join(download_dir, file_name)))
         assert os.path.isfile(os.path.join(download_dir, file_name))
         time.sleep(self._delay)
 
-    def ABCtest_http_download_with_external_idp_authentication(self):
+    def test_http_download_with_external_idp_authentication(self):
 
         print("...test_http_download_with_external_idp_authentication...")
         idp_server = self._get_idp_server()
@@ -116,9 +120,9 @@ class DownloadTest(BaseTestCase):
         ext_idp_server = "esgf-node.llnl.gov"
         file_name = thredds_page._select_download_type('http')
         self._do_login(ext_idp_server, user, password)
-
+        # sleep for a bit to allow time for download to complete
+        time.sleep(30)        
         ret_code = self._utils.restore_esgf_policies_common(file_to_restore, idp_server)
-        
         assert os.path.isfile(os.path.join(download_dir, file_name))
         time.sleep(self._delay)
 
