@@ -45,7 +45,7 @@ class DownloadTest(BaseTestCase):
             print("Not getting the expected OpenIdLoginPage")
             raise InvalidPageException
 
-    def ABCtest_http_download_user_has_no_access(self):
+    def test_http_download_user_has_no_access(self):
         '''
         Test restricted access, have the following in esgf_policies_common.xml:
         <policy resource=".*test.*" attribute_type="wheel" attribute_value="super" action="Read"/>
@@ -72,7 +72,7 @@ class DownloadTest(BaseTestCase):
         assert self.driver.find_element_by_xpath(self._group_registration_request_locator)
         time.sleep(self._delay)
 
-    def ABCtest_http_download_user_as_rootAdmin(self):
+    def test_http_download_user_as_rootAdmin(self):
         '''
         Test restricted access, have the following in esgf_policies_common.xml:
         <policy resource=".*test.*" attribute_type="wheel" attribute_value="super" action="Read"/>
