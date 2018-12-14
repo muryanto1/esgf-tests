@@ -62,6 +62,7 @@ class DownloadTest(BaseTestCase):
         thredds_page = ThreddsPage(self.driver, idp_server)
         download_dir = self._get_download_dir()
 
+        printf("...select_download_type..http")
         file_name = thredds_page._select_download_type('http')
         self._do_login(idp_server, user, password)
 

@@ -9,25 +9,33 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 
 from LoginPage import DataAccessLoginPage
 
 class ThreddsPage(BasePage):
 
-    _root_catalog_locator = "//a//tt[contains(text(), 'Earth System Root catalog')]"
-    _test_folder_locator = "//tt[contains(text(), 'test')]"
-    _test_file_locator = "//tt[contains(text(), 'nc')]"
+    # old thredds
+    #_root_catalog_locator = "//a//tt[contains(text(), 'Earth System Root catalog')]"
+    #_test_folder_locator = "//tt[contains(text(), 'test')]"
+    #_test_file_locator = "//tt[contains(text(), 'nc')]"
 
-    _download_li_locator = "//ol//li"
+    _root_catalog_locator = "//a//code[contains(text(), 'Earth System Root catalog')]"
+    _test_folder_locator = "//code[contains(text(), 'test')]"
+    _test_file_locator = "//code[contains(text(), 'nc')]"
 
-    download_map = {"http": "HTTPServer:",
-                     "ftp": "GridFTP:",
-                     "dap": "OpenDAP:"}
+    _download_li_locator = "//tr//td//a"
+
+    # old thredds has : at the end of each text
+    download_map = {"http": "HTTPServer",
+                     "ftp": "GridFTP",
+                     "dap": "OpenDAP"}
 
     def __init__(self, driver, server):
         super(ThreddsPage, self).__init__(driver, server)
 
     def _validate_page(self):
+        print("xxx ThreddsPage _validate_page()")
         self.load_page(self.get_idp_server(), 'thredds')
         try:
             root_catalog_element  = self.driver.find_element_by_xpath(self._root_catalog_locator)
@@ -36,10 +44,16 @@ class ThreddsPage(BasePage):
 
         if self.get_idp_server() is None:
             self.set_idp_server()
+        print("xxx ThreddsPage _validate_page() is good")
 
     def _go_through_catalog(self):
-        self.driver.find_element_by_xpath(self._root_catalog_locator).click()        
+        print("xxx click on root_catalog xxx")
+        self.driver.find_element_by_xpath(self._root_catalog_locator).click()
+
+        print("xxx click on test_folder xxx")
         self.driver.find_element_by_xpath(self._test_folder_locator).click()
+
+        print("xxx click on test_file_locator xxx")
         file_name = self.driver.find_element_by_xpath(self._test_file_locator).text
         self.driver.find_element_by_xpath(self._test_file_locator).click()
 
@@ -71,17 +85,35 @@ class ThreddsPage(BasePage):
         data_access_login_page._select_open_id_from_drop_down(ext_open_id)
 
     def __select_li_for_download_type(self, file_name, type):
+        # for http
         _path_locator = "/thredds/fileServer/esg_dataroot/test/{f}".format(f=file_name)
-        _download_file_locator = ".//a[contains(text(), {f})]".format(f=_path_locator)
+        _download_file_locator = "//a[@href=\"{f}\"]".format(f=_path_locator)
 
         print("...find the link to click for {t} download".format(t=type))
         li_elements = self.driver.find_elements_by_xpath(self._download_li_locator)
         for element in li_elements:
+            print("....going through each element....")
             download_type = element.find_element_by_xpath(".//b").text
+            print("xxx DEBUG...download_type: {d}, text: {t}".format(d=download_type,
+                                                                     t=self.download_map[type]))
             if download_type == self.download_map[type]:
                 print("...found the element to click for {t} download".format(t=type))
                 time.sleep(self._delay)
                 print("...click on the link for {t} download".format(t=type))
-                element.find_element_by_xpath(_download_file_locator).click()
+                #self.driver.find_element_by_xpath(_download_file_locator).click()
+                #wait = WebDriverWait(self.driver, 10)
+                #el = wait.until(EC.element_to_be_clickable((By.XPATH, _download_file_locator)))
+                #download = self.driver.find_element_by_xpath(_download_file_locator)
+                #download.click()
+
+                #wait = WebDriverWait(self.driver, 10)
+                #download = self.driver.find_element_by_xpath(_download_file_locator)
+                #actionChains = ActionChains(self.driver)
+                #actionChains.move_to_element(download).perform()
+                #clickable_el = wait.until(EC.element_to_be_clickable((By.XPATH, _download_file_locator)))
+                #clickable_el.click()
+
+                download_el = self.driver.find_element_by_xpath(_download_file_locator)
+                self.driver.execute_script("arguments[0].click();", download_el)
                 time.sleep(self._delay)
                 break

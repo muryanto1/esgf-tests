@@ -24,7 +24,9 @@ class MainPage(BasePage):
         
     def _validate_page(self):
         # validate Main page is displaying a 'Home' tab
+        print("xxx MainPage _validate_page xxx")
         home_tab_element = self.driver.find_element_by_xpath(self._home_locator)
+        print("xxx MainPage _validate_page is good xxx")
 
     def _goto_login_page(self):
         login_page_element = self.driver.find_element_by_xpath(self._login_page_locator)
